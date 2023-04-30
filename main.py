@@ -7,6 +7,7 @@ import openai
 import os
 import socket
 import threading
+import time
 
 
 def Chat(ask: str, message_history: list[dict]) -> str:
@@ -56,7 +57,7 @@ def handle_client(client_socket, addr):
 
     message_history = []
 
-    print(f'客户端 {addr} 已连接。')
+    print(f'客户端 {addr} 已连接，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
     while True:
         data = client_socket.recv(4096).decode()
 
@@ -67,7 +68,7 @@ def handle_client(client_socket, addr):
         if data.strip() == "quit" or data.strip() == "exit":
             break
 
-    print(f"客户端 {addr} 已断开连接。")
+    print(f"客户端 {addr} 已断开连接，时间：{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
     client_socket.close()
 
 
