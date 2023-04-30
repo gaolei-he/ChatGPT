@@ -1,5 +1,7 @@
 import openai
 import os
+import socket
+import threading
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -27,9 +29,8 @@ def MakeMessages(ask):
         })
     return list(reversed(reverse_message))
 
-while True:
-    ask = input("请输入问题：")
-
+def Chat(data):
+    ask = data
     message = MakeMessages(ask)
 
     response = openai.ChatCompletion.create(
@@ -37,5 +38,34 @@ while True:
         messages = message
     )
     response_content = response.choices[0].message.content
-    print(response_content)
     message_history.append((ask, response_content))
+
+    return response_content
+
+def handle_client(client_socket, addr):
+    print(f'客户端 {addr} 已连接。')
+    while True:
+        data = client_socket.recv(4096).decode()
+
+        result = Chat(data)
+
+        client_socket.send(result.encode())
+
+        if data.strip() == "quit" or data.strip() == "exit":
+            break
+    print(f"客户端 {addr} 已断开连接。")
+    client_socket.close()
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+server_socket.bind(('localhost', 3389))
+
+server_socket.listen()
+
+print('服务器已启动，等待客户端连接...')
+
+while True:
+    client_socket, addr = server_socket.accept()
+
+    thread = threading.Thread(target=handle_client, args=(client_socket, addr))
+    thread.start()
