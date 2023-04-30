@@ -58,7 +58,7 @@ def handle_client(client_socket, addr):
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_socket.bind(('localhost', 3389))
+server_socket.bind((socket.gethostbyname(socket.gethostname()), 3389))
 
 server_socket.listen()
 
