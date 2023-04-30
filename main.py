@@ -58,16 +58,18 @@ def handle_client(client_socket, addr):
     message_history = []
 
     print(f'客户端 {addr} 已连接，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
-    while True:
-        data = client_socket.recv(4096).decode()
+    try:
+        while True:
+            data = client_socket.recv(4096).decode()
 
-        result = Chat(data, message_history)
+            result = Chat(data, message_history)
 
-        client_socket.send(result.encode())
+            client_socket.send(result.encode())
 
-        if data.strip() == "quit" or data.strip() == "exit":
-            break
-
+            if data.strip() == "quit" or data.strip() == "exit":
+                break
+    except:
+        pass
     print(f"客户端 {addr} 已断开连接，时间：{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
     client_socket.close()
 
