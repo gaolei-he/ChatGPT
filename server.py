@@ -63,6 +63,7 @@ def handle_client(client_socket, addr, passwd):
     
 
     try:
+        client_socket.send('请输入连接密码：'.encode())
         user_input_passwd = client_socket.recv(4096).decode()
 
         if user_input_passwd.strip() != passwd:
