@@ -4,7 +4,5 @@
 
 用法：
 
-```
-服务端运行server.py
-客户端运行client.py
-```
+> 服务端运行server.py
+> 客户端运行client.py

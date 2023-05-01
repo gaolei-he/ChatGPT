@@ -5,8 +5,9 @@ def main():
     ip = input("请输入服务器IP地址：")
     client_socket.connect((ip, 3389))
     passwd = input('请输入连接密码：')
-    status = client_socket.send(passwd.encode())
-
+    client_socket.send(passwd.encode())
+    status = client_socket.recv(4096).decode()
+    
     if status.startswith('连接成功'):
         print("连接成功，开始聊天！(输入exit或quit来退出程序)")
     else:
