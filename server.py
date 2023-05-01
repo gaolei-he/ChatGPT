@@ -52,12 +52,23 @@ def MakeMessages(ask, message_history):
     return list(reversed(reverse_message))
 
 
-def handle_client(client_socket, addr):
+def handle_client(client_socket, addr, passwd):
     '''处理客户端连接'''
 
     message_history = []
 
     print(f'客户端 {addr} 已连接，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
+
+    user_input_passwd = client_socket.recv(4096).decode()
+
+    if user_input_passwd != passwd:
+        client_socket.send('密码错误，连接关闭'.encode())
+        print('密码错误，连接关闭\n')
+        client_socket.close()
+        return
+    else:
+        client_socket.send('连接成功'.encode())
+
     try:
         while True:
             data = client_socket.recv(4096).decode()
@@ -70,11 +81,12 @@ def handle_client(client_socket, addr):
                 break
     except:
         pass
-    print(f"客户端 {addr} 已断开连接，时间：{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
+    print(f"客户端 {addr} 已断开连接，时间：{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}\n")
     client_socket.close()
 
 
 def main():
+
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -83,12 +95,14 @@ def main():
 
     server_socket.listen()
 
+    passwd = input("请设置客户端连接密码：")
+
     print('服务器已启动，等待客户端连接...')
 
     while True:
         client_socket, addr = server_socket.accept()
 
-        thread = threading.Thread(target=handle_client, args=(client_socket, addr))
+        thread = threading.Thread(target=handle_client, args=(client_socket, addr, passwd))
         thread.start()
 
 
