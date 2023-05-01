@@ -59,17 +59,17 @@ def handle_client(client_socket, addr, passwd):
 
     print(f'客户端 {addr} 已连接，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
 
-    user_input_passwd = client_socket.recv(4096).decode()
 
-    if user_input_passwd != passwd:
-        client_socket.send('密码错误，连接关闭'.encode())
-        print('密码错误，连接关闭\n')
-        client_socket.close()
-        return
-    else:
-        client_socket.send('连接成功'.encode())
+    
 
     try:
+        user_input_passwd = client_socket.recv(4096).decode()
+        
+        if user_input_passwd != passwd:
+            client_socket.send('密码错误，连接关闭'.encode())
+            raise ValueError('密码错误')
+        
+        client_socket.send('连接成功'.encode())
         while True:
             data = client_socket.recv(4096).decode()
 
@@ -78,9 +78,12 @@ def handle_client(client_socket, addr, passwd):
             client_socket.send(result.encode())
 
             if data.strip() == "quit" or data.strip() == "exit":
-                break
-    except:
-        pass
+                raise ValueError('客户端主动断开连接')
+    except ValueError as e:
+        print(f'客户端 {addr} {e}，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
+    except Exception as e:
+        print(f'客户端 {addr} {e}，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
+
     print(f"客户端 {addr} 已断开连接，时间：{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}\n")
     client_socket.close()
 
