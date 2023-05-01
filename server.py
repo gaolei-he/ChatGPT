@@ -66,16 +66,17 @@ def handle_client(client_socket, addr, passwd):
         user_input_passwd = client_socket.recv(4096).decode()
 
         if user_input_passwd.strip() != passwd:
-            client_socket.send('密码错误，连接关闭'.encode())
+            client_socket.send('密码错误，连接关闭\n'.encode())
             raise ValueError('密码错误')
         
-        client_socket.send('连接成功'.encode())
+        client_socket.send('连接成功，开始聊天！(输入exit或quit来退出程序)\n'.encode())
         while True:
+            client_socket.send('请输入你的问题：'.encode())
             data = client_socket.recv(4096).decode()
 
             result = Chat(data, message_history)
 
-            client_socket.send(result.encode())
+            client_socket.send(('ChatGPT的回答:\n' + result + '\n').encode())
 
             if data.strip() == "quit" or data.strip() == "exit":
                 raise ValueError('客户端主动断开连接')
