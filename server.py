@@ -64,8 +64,8 @@ def handle_client(client_socket, addr, passwd):
 
     try:
         user_input_passwd = client_socket.recv(4096).decode()
-        
-        if user_input_passwd != passwd:
+
+        if user_input_passwd.strip() != passwd:
             client_socket.send('密码错误，连接关闭'.encode())
             raise ValueError('密码错误')
         
