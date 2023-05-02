@@ -18,8 +18,8 @@ def main():
 
     try:
         while True:
-            print(client_socket.recv(4096).decode())
-            data = input()
+            print(client_socket.recv(4096).decode(), end='')
+            data = input().strip()
             client_socket.send(data.encode())
 
             result = client_socket.recv(40960).decode()
