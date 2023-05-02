@@ -18,7 +18,7 @@ def main():
 
     try:
         while True:
-            
+            print(client_socket.recv(4096).decode())
             data = input()
             client_socket.send(data.encode())
 
@@ -27,7 +27,6 @@ def main():
                 break
             print(result)
 
-            print(client_socket.recv(4096).decode())
         client_socket.send("quit".encode())
     except:
         client_socket.send("quit".encode())

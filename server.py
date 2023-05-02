@@ -83,7 +83,7 @@ def handle_client(client_socket: socket.socket, addr: str, passwd: str) -> None:
     except ValueError as e:
         print(
             f'客户端 {addr} {e}，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
-    except ConnectionResetError as e:
+    except ConnectionError as e:
         print(
             f'客户端 {addr} 异常断开连接，时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}')
     except Exception as e:
